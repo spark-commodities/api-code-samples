@@ -24,8 +24,10 @@ except ImportError:
 
 # Your credentials. You can edit this file or set environment variables.
 # Please send an email to info@sparkcommodities.com to request credentials.
-CLIENT_ID = os.getenv("SPARK_CLIENT_ID", "my-client-id")
-CLIENT_SECRET = os.getenv("SPARK_CLIENT_SECRET", "my-client-secret")
+CLIENT_ID = os.getenv("SPARK_CLIENT_ID")
+CLIENT_SECRET = os.getenv("SPARK_CLIENT_SECRET")
+if not CLIENT_ID or not CLIENT_SECRET:
+    raise RuntimeError("SPARK_CLIENT_ID and SPARK_CLIENT_SECRET env vars required")
 
 
 API_BASE_URL = "https://api.sparkcommodities.com"
@@ -71,11 +73,11 @@ def get_access_token():
 
     print(
         "Successfully fetched an access token {}****, valid {} seconds.".format(
-            content["access_token"][:10], content["expires_in"]
+            content["accessToken"][:10], content["expiresIn"]
         )
     )
 
-    return content["access_token"]
+    return content["accessToken"]
 
 
 def list_contracts(access_token):
@@ -104,6 +106,7 @@ def list_contracts(access_token):
     # The server returned a JSON response
     data = json.loads(content)
 
+    print("Contracts:")
     for contract in data["data"]:
         print(contract["fullName"])
 

@@ -35,7 +35,7 @@ class SparkClient {
     }
 
     /**
-     * Get a new access_token. Access tokens are the thing that applications use to make API requests.
+     * Get a new accessToken. Access tokens are the thing that applications use to make API requests.
      * Access tokens must be kept confidential in storage.
      * <p>
      * # Procedure:
@@ -65,8 +65,8 @@ class SparkClient {
         HttpResponse httpResponse = httpClient.execute(request);
         String responseString = EntityUtils.toString(httpResponse.getEntity(), StandardCharsets.UTF_8);
         JsonObject responseJson = gson.fromJson(responseString, JsonObject.class);
-        accessToken = responseJson.get("access_token").getAsString();
-        int expiresInSeconds = responseJson.get("expires_in").getAsInt();
+        accessToken = responseJson.get("accessToken").getAsString();
+        int expiresInSeconds = responseJson.get("expiresIn").getAsInt();
 
         System.out.println("Successfully fetched an access token " + accessToken + ", expires in " + expiresInSeconds + " seconds");
     }
