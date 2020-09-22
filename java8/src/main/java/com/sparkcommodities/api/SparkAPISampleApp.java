@@ -11,6 +11,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
@@ -52,14 +53,12 @@ class SparkClient {
         HttpClient httpClient = HttpClients.createDefault();
 
         String authHeader = Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes(StandardCharsets.UTF_8));
-        List<NameValuePair> nameValuePairs = new ArrayList<>();
-        nameValuePairs.add(new BasicNameValuePair("grant_type", "client_credentials"));
-        nameValuePairs.add(new BasicNameValuePair("scope", "read-lng-freight-prices"));
+        StringEntity authParams = new StringEntity("{\"grantType\": \"clientCredentials\", \"scopes\": \"read:lng-freight-prices\"}");
 
         HttpUriRequest request = RequestBuilder.post().setUri(urlAuth)
                 .setHeader(HttpHeaders.AUTHORIZATION, authHeader)
                 .setHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.getMimeType())
-                .setEntity(new UrlEncodedFormEntity(nameValuePairs))
+                .setEntity(authParams)
                 .build();
 
         HttpResponse httpResponse = httpClient.execute(request);
