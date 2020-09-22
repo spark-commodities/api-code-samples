@@ -40,9 +40,9 @@ def get_access_token():
 
     # Procedure:
 
-    Do a POST query with `grant_type` and `scope` in the body. A basic authorization
+    Do a POST query with `grantType` and `scopes` in the body. A basic authorization
     HTTP header is required. The "Basic" HTTP authentication scheme is defined in
-    RFC 7617, which transmits credentials as `client_id:client_secret` pairs, encoded
+    RFC 7617, which transmits credentials as `clientId:clientSecret` pairs, encoded
     using base64.
     """
 
@@ -57,8 +57,8 @@ def get_access_token():
         "Accept": "application/json",
     }
 
-    body = {"grant_type": "client_credentials", "scope": "read-lng-freight-prices"}
-    data = parse.urlencode(body).encode("utf-8")
+    body = {"grantType": "clientCredentials", "scopes": "read:lng-freight-prices"}
+    data = json.dumps(body).encode("utf-8")
 
     # POST request (data is not None)
     req = request.Request(url, data=data, headers=headers)
