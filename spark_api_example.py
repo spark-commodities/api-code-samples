@@ -55,6 +55,7 @@ def get_access_token():
     headers = {
         "Authorization": b64encode(payload).decode(),
         "Accept": "application/json",
+        "Content-Type": "application/json"
     }
 
     body = {"grantType": "clientCredentials", "scopes": "read:lng-freight-prices"}
