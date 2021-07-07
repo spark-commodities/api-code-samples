@@ -58,6 +58,7 @@ class SparkClient {
         HttpUriRequest request = RequestBuilder.post().setUri(urlAuth)
                 .setHeader(HttpHeaders.AUTHORIZATION, authHeader)
                 .setHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.getMimeType())
+                .setHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType())
                 .setEntity(authParams)
                 .build();
 
