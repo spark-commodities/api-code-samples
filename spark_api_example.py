@@ -192,7 +192,7 @@ def list_contracts(access_token):
 
 def get_latest_price_releases(access_token, ticker):
     """
-    For each contract, fetch then display the latest price release
+    For the contract, fetch then display the latest price release
 
     # Procedure:
 
@@ -223,6 +223,57 @@ def get_latest_price_releases(access_token, ticker):
         )
 
 
+def fetch_historical_price_releases(access_token, ticker, limit=4, offset=None):
+    """
+    For a selected contract, this endpoint returns all the Price Releases you can
+    access according to your current subscription, ordered by release date descending.
+
+    **Note**: Unlimited access to historical data and full forward curves is only
+    available to those with Premium access. Get in touch to find out more.
+
+    **Params**
+
+    limit: optional integer value to set an upper limit on the number of price
+           releases returned by the endpoint. Default here is 4.
+
+    offset: optional integer value to set from where to start returning data.
+            Default is 0.
+
+    # Procedure:
+
+    Do GET queries to /v1.0/contracts/{contract_ticker_symbol}/price-releases/
+    with a Bearer token authorization HTTP header.
+    """
+    query_params = "?limit={}".format(limit)
+    if offset is not None:
+        query_params += "&offset={}".format(offset)
+
+    content = do_api_get_query(
+        uri="/v1.0/contracts/{}/price-releases/{}".format(ticker, query_params),
+        access_token=access_token,
+    )
+
+    print(">>>> Get price releases for {}".format(ticker))
+
+    for release in content["data"]:
+        release_date = release["releaseDate"]
+
+        print("- release date =", release_date)
+
+        data_points = release["data"][0]["dataPoints"]
+
+        for data_point in data_points:
+            period_start_at = data_point["deliveryPeriod"]["startAt"]
+            spark_price = data_point["derivedPrices"]["usdPerDay"]["spark"]
+
+            print(
+                "  Spark Price is USD",
+                "{:>6}".format(spark_price),
+                "/day for period starting on",
+                period_start_at,
+            )
+
+
 def main(file_path=None):
 
     print(">>>> Running Spark API Python sample...")
@@ -234,8 +285,12 @@ def main(file_path=None):
 
     # Fetch data:
     tickers = list_contracts(access_token)
+
     for ticker in tickers:
         get_latest_price_releases(access_token, ticker)
+
+    # For only 1 contract:
+    fetch_historical_price_releases(access_token, tickers[0], limit=4)
 
     print(">>>> Done!")
 

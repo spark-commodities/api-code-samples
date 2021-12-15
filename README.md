@@ -58,5 +58,14 @@ release date = 2020-12-14
 Spark Price is USD 192250 /day for period starting on 2021-01-01
 Spark Price is USD 128000 /day for period starting on 2021-02-01
 ...
->>>> Done
+>>>> Get price releases for spark25s
+- release date = 2020-12-14
+  Spark Price is USD 186000 /day for period starting on 2020-12-29
+- release date = 2020-12-10
+  Spark Price is USD 261500 /day for period starting on 2020-12-25
+- release date = 2020-12-07
+  Spark Price is USD 277000 /day for period starting on 2020-12-22
+- release date = 2020-12-03
+  Spark Price is USD 263250 /day for period starting on 2020-12-18
+>>>> Done!
 ```
