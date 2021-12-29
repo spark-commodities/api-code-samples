@@ -152,7 +152,7 @@ def get_access_token(client_id, client_secret):
     }
     body = {
         "grantType": "clientCredentials",
-        "scopes": "read:lng-freight-prices",
+        "scopes": "read:lng-freight-prices,read:routes",
     }
 
     content = do_api_post_query(uri="/oauth/token/", body=body, headers=headers)
@@ -274,6 +274,31 @@ def fetch_historical_price_releases(access_token, ticker, limit=4, offset=None):
 
 
 
+def routes_sample(access_token):
+    # list all available routes and release date:
+    routes = do_api_get_query(
+        uri="/v1.0/routes",
+        access_token=access_token,
+    )
+
+    for route in routes["data"]["routes"]:
+        print(f"uuid={route['uuid']}, "
+              f"{route['loadPort']['name']} to {route['dischargePort']['name']} "
+              f"via={route['via']})")
+
+    release_dates = routes["data"]["sparkReleaseDates"]
+    print(f"release_dates={release_dates}")
+
+    # I'm interested in the first route,  want to print the last 10 released costs:
+    route_uuid = routes["data"]["routes"][0]['uuid']
+    for release_date in release_dates[:10]:
+        ship_costs = do_api_get_query(
+            uri=f"/v1.0/routes/{route_uuid}?release-date={release_date}",
+            access_token=access_token
+        )
+        print(f"ship costs on {release_date}={ship_costs}")
+
+
 def main(file_path=None):
 
     print(">>>> Running Spark API Python sample...")
@@ -291,6 +316,9 @@ def main(file_path=None):
 
     # For only 1 contract:
     fetch_historical_price_releases(access_token, tickers[0], limit=4)
+
+    # Routes
+    routes_sample(access_token)
 
     print(">>>> Done!")
 
