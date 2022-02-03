@@ -213,15 +213,14 @@ def get_latest_price_releases(access_token, ticker):
 
     for data_point in data_points:
         period_start_at = data_point["deliveryPeriod"]["startAt"]
-        spark_price = data_point["derivedPrices"]["usdPerDay"]["spark"]
+
+        spark_prices = dict()
+        for unit, prices in data_point["derivedPrices"].items():
+            spark_prices[unit] = prices['spark']
 
         print(
-            "Spark Price is USD",
-            "{:>6}".format(spark_price),
-            "/day for period starting on",
-            period_start_at,
+            f"Spark Price={spark_prices} for period starting on {period_start_at}"
         )
-
 
 def fetch_historical_price_releases(access_token, ticker, limit=4, offset=None):
     """
@@ -264,14 +263,15 @@ def fetch_historical_price_releases(access_token, ticker, limit=4, offset=None):
 
         for data_point in data_points:
             period_start_at = data_point["deliveryPeriod"]["startAt"]
-            spark_price = data_point["derivedPrices"]["usdPerDay"]["spark"]
+
+            spark_prices = dict()
+            for unit, prices in data_point["derivedPrices"].items():
+                spark_prices[unit] = prices['spark']
 
             print(
-                "  Spark Price is USD",
-                "{:>6}".format(spark_price),
-                "/day for period starting on",
-                period_start_at,
+                f"Spark Price={spark_prices} for period starting on {period_start_at}"
             )
+
 
 
 def main(file_path=None):
