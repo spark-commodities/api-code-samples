@@ -23,6 +23,7 @@ import json
 import os
 import sys
 from base64 import b64encode
+from pprint import pprint
 from urllib.parse import urljoin
 
 
@@ -55,17 +56,16 @@ def retrieve_credentials(file_path=None):
             raise RuntimeError("The file {} doesn't exist".format(file_path))
 
         with open(file_path) as fp:
-            first_line = fp.readline()
-            if "clientId,clientSecret" not in first_line:
-                print("First line: {}".format(first_line))
-                raise RuntimeError(
-                    "The specified file {} doesn't look like to be a Spark API client "
-                    "credentials file".format(file_path)
-                )
+            lines = [l.replace("\n", "") for l in fp.readlines()]
 
-            second_line = fp.readline()
-
-        client_id, client_secret = second_line.split(",")
+        if lines[0] in ("clientId,clientSecret", "client_id,client_secret"):
+            client_id, client_secret = lines[1].split(",")
+        else:
+            print("First line read: '{}'".format(lines[0]))
+            raise RuntimeError(
+                "The specified file {} doesn't look like to be a Spark API client "
+                "credentials file".format(file_path)
+            )
 
     print(">>>> Found credentials!")
     print(
@@ -181,7 +181,7 @@ def list_contracts(access_token):
     """
     content = do_api_get_query(uri="/v1.0/contracts/", access_token=access_token)
 
-    print(">>>> Contracts:")
+    print(">>>> All the contracts you can fetch")
     tickers = []
     for contract in content["data"]:
         print(contract["fullName"])
@@ -190,9 +190,9 @@ def list_contracts(access_token):
     return tickers
 
 
-def get_latest_price_releases(access_token, ticker):
+def fetch_latest_price_releases(access_token, ticker):
     """
-    For the contract, fetch then display the latest price release
+    For a contract, fetch then display the latest price release
 
     # Procedure:
 
@@ -216,11 +216,10 @@ def get_latest_price_releases(access_token, ticker):
 
         spark_prices = dict()
         for unit, prices in data_point["derivedPrices"].items():
-            spark_prices[unit] = prices['spark']
+            spark_prices[unit] = prices["spark"]
 
-        print(
-            f"Spark Price={spark_prices} for period starting on {period_start_at}"
-        )
+        print(f"Spark Price={spark_prices} for period starting on {period_start_at}")
+
 
 def fetch_historical_price_releases(access_token, ticker, limit=4, offset=None):
     """
@@ -243,6 +242,8 @@ def fetch_historical_price_releases(access_token, ticker, limit=4, offset=None):
     Do GET queries to /v1.0/contracts/{contract_ticker_symbol}/price-releases/
     with a Bearer token authorization HTTP header.
     """
+    print(">>>> Get price releases for {}".format(ticker))
+
     query_params = "?limit={}".format(limit)
     if offset is not None:
         query_params += "&offset={}".format(offset)
@@ -251,8 +252,6 @@ def fetch_historical_price_releases(access_token, ticker, limit=4, offset=None):
         uri="/v1.0/contracts/{}/price-releases/{}".format(ticker, query_params),
         access_token=access_token,
     )
-
-    print(">>>> Get price releases for {}".format(ticker))
 
     for release in content["data"]:
         release_date = release["releaseDate"]
@@ -266,37 +265,43 @@ def fetch_historical_price_releases(access_token, ticker, limit=4, offset=None):
 
             spark_prices = dict()
             for unit, prices in data_point["derivedPrices"].items():
-                spark_prices[unit] = prices['spark']
+                spark_prices[unit] = prices["spark"]
 
             print(
                 f"Spark Price={spark_prices} for period starting on {period_start_at}"
             )
 
 
+def fetch_routes(access_token):
 
-def routes_sample(access_token):
+    print(">>>> List the first 10 routes")
+
     # list all available routes and release date:
     routes = do_api_get_query(
         uri="/v1.0/routes",
         access_token=access_token,
     )
 
-    for route in routes["data"]["routes"]:
-        print(f"uuid={route['uuid']}, "
-              f"{route['loadPort']['name']} to {route['dischargePort']['name']} "
-              f"via={route['via']})")
+    for route in routes["data"]["routes"][:10]:
+        print(
+            f"uuid={route['uuid']}, "
+            f"{route['loadPort']['name']} to {route['dischargePort']['name']} "
+            f"via={route['via']})"
+        )
 
     release_dates = routes["data"]["sparkReleaseDates"]
-    print(f"release_dates={release_dates}")
 
-    # I'm interested in the first route,  want to print the last 10 released costs:
-    route_uuid = routes["data"]["routes"][0]['uuid']
-    for release_date in release_dates[:10]:
+    print(
+        ">>>> I'm interested in the first route, I want to print the last released cost"
+    )
+    route_uuid = routes["data"]["routes"][0]["uuid"]
+    for release_date in release_dates[:1]:
         ship_costs = do_api_get_query(
             uri=f"/v1.0/routes/{route_uuid}?release-date={release_date}",
-            access_token=access_token
+            access_token=access_token,
         )
-        print(f"ship costs on {release_date}={ship_costs}")
+        print(f"ship costs on {release_date}")
+        pprint(ship_costs["data"])
 
 
 def main(file_path=None):
@@ -308,19 +313,19 @@ def main(file_path=None):
     # Authenticate:
     access_token = get_access_token(client_id, client_secret)
 
-    # Fetch data:
+    # Fetch all contracts:
     tickers = list_contracts(access_token)
 
-    for ticker in tickers:
-        get_latest_price_releases(access_token, ticker)
+    # For only 1 contract:
+    fetch_latest_price_releases(access_token, tickers[0])
 
     # For only 1 contract:
     fetch_historical_price_releases(access_token, tickers[0], limit=4)
 
-    # Routes
-    routes_sample(access_token)
+    # Routes (only a few ones)
+    fetch_routes(access_token)
 
-    print(">>>> Done!")
+    print(">>>> Well done, you successfully ran your first queries!")
 
 
 if __name__ == "__main__":

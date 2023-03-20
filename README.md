@@ -1,71 +1,12 @@
-# Spark API Code Samples
+# Spark Commodities API Code Samples
 
-* Python: [spark_api_example.py](spark_api_example.py)
-* Java 8: [readme](java8)
+**Make your first Spark Commodities API call:**
 
-More information here: https://developers.sparkcommodities.com/
+* [Python3 Examples](python3)
+* [Java8 Examples](java8)
 
-**An OAuth2 client is required.**
+The full API documentation is available [here](https://developers.sparkcommodities.com/)
 
-Please refer to https://app.sparkcommodities.com/freight/data-integrations/api if you 
-don't have any.
+---
 
-
-## Running the Python sample:
-
-Python >= 3.1 is required.  You can either execute the python script:
-
-- By providing the `client_credentials.csv` file path
-
-```shell
-$ python spark_api_example.py <client_credentials_csv_file_path>
-```
-
-- By providing 2 environment variables:
-
-```shell
-$ export SPARK_CLIENT_ID=XXXX
-$ export CLIENT_SECRET=YYYY
-$ python spark_api_example.py
-```
-
-An execution example:
-
-```shell
-$ python spark_api_example.py ~/Downloads/client_credentials.csv
-```
-
-Output:
-
-```
->>>> Running Spark API Python sample...
->>>> Found credentials!
->>>> Client_id=166f3ee3-cfdc-46cc-ad43-3c1894697bb4, client_secret=2a14d****
->>>> Successfully fetched an access token eyJ0e****, valid 1799 seconds.
->>>> Contracts:
-Spark25S Pacific 160 TFDE
-Spark25F Pacific 160 TFDE
-Spark25Fo Pacific 160 TFDE
-...
->>>> Get latest price release for spark25s
-release date = 2020-12-14
-Spark Price is USD 186000 /day for period starting on 2020-12-29
->>>> Get latest price release for spark25f
-release date = 2020-12-14
-Spark Price is USD 187500 /day for period starting on 2020-01-01
->>>> Get latest price release for spark25fo
-release date = 2020-12-14
-Spark Price is USD 192250 /day for period starting on 2021-01-01
-Spark Price is USD 128000 /day for period starting on 2021-02-01
-...
->>>> Get price releases for spark25s
-- release date = 2020-12-14
-  Spark Price is USD 186000 /day for period starting on 2020-12-29
-- release date = 2020-12-10
-  Spark Price is USD 261500 /day for period starting on 2020-12-25
-- release date = 2020-12-07
-  Spark Price is USD 277000 /day for period starting on 2020-12-22
-- release date = 2020-12-03
-  Spark Price is USD 263250 /day for period starting on 2020-12-18
->>>> Done!
-```
+© 2023 Spark Commodities Pte Ltd. All rights reserved
