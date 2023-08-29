@@ -5,7 +5,7 @@
 * [Python3 Examples](python3)
 * [Java8 Examples](java8)
 
-The full API documentation is available [here](https://developers.sparkcommodities.com/)
+The full API documentation is available [here](https://api.sparkcommodities.com/)
 
 ---
 
