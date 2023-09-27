@@ -24,3 +24,4 @@ doc/
 .idea/
 .coverage
 test-reports/
+.ipynb_checkpoints

@@ -43,7 +43,6 @@ def retrieve_credentials(file_path=None):
     environment variables
     """
     if file_path is None:
-
         client_id = os.getenv("SPARK_CLIENT_ID")
         client_secret = os.getenv("SPARK_CLIENT_SECRET")
         if not client_id or not client_secret:
@@ -273,7 +272,6 @@ def fetch_historical_price_releases(access_token, ticker, limit=4, offset=None):
 
 
 def fetch_routes(access_token):
-
     print(">>>> List the first 10 routes")
 
     # list all available routes and release date:
@@ -305,7 +303,6 @@ def fetch_routes(access_token):
 
 
 def main(file_path=None):
-
     print(">>>> Running Spark API Python sample...")
 
     client_id, client_secret = retrieve_credentials(file_path)
@@ -329,7 +326,6 @@ def main(file_path=None):
 
 
 if __name__ == "__main__":
-
     if len(sys.argv) >= 2:
         main(file_path=sys.argv[1])
     else:
