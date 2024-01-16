@@ -1,6 +1,9 @@
+![Spark API](./spark-api.png)
+
+
 # Spark Commodities API Code Samples
 
-Welcome to the Spark Commodities API Github page! 🚀 
+Welcome to the Spark Commodities API Code Samples repository! 🚀 
 
 By signing up to the 
 [Spark Commodities platform](https://app.sparkcommodities.com) and 
@@ -28,4 +31,4 @@ The full API documentation is available [here](https://api.sparkcommodities.com/
 
 ---
 
-© 2023 Spark Commodities Pte Ltd. All rights reserved
+© 2024 Spark Commodities Pte Ltd. All rights reserved
