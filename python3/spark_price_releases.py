@@ -10,13 +10,13 @@ Usage:
 
 - By providing the client_credentials file path
 
-$ python spark_api_example.py <client_credentials_csv_file_path>
+$ python spark_price_releases.py <client_credentials_csv_file_path>
 
 - By providing 2 environment variables:
 
 $ export SPARK_CLIENT_ID=XXXX
-$ export CLIENT_SECRET=YYYY
-$ python spark_api_example.py
+$ export SPARK_CLIENT_SECRET=YYYY
+$ python spark_price_releases.py
 """
 
 import json
@@ -134,7 +134,7 @@ def get_access_token(client_id, client_secret):
 
     # Procedure:
 
-    Do a POST query with `grantType` and `scopes` in the body. A basic authorization
+    Do a POST query with `grantType` in the body. A basic authorization
     HTTP header is required. The "Basic" HTTP authentication scheme is defined in
     RFC 7617, which transmits credentials as `clientId:clientSecret` pairs, encoded
     using base64.
@@ -151,7 +151,6 @@ def get_access_token(client_id, client_secret):
     }
     body = {
         "grantType": "clientCredentials",
-        "scopes": "read:lng-freight-prices,read:routes",
     }
 
     content = do_api_post_query(uri="/oauth/token/", body=body, headers=headers)
@@ -302,6 +301,23 @@ def fetch_routes(access_token):
         pprint(ship_costs["data"])
 
 
+def fetch_intraday(access_token):
+    print(">>>> List last Intraday items (JKM-TTF / usb-per-mmbtu)")
+
+    # list all available routes and release date:
+    content = do_api_get_query(
+        uri=f"/beta/intraday/live?contract=jkm-ttf&unit=usd-per-mmbtu",
+        access_token=access_token,
+    )
+
+    for data_point in content["data"]:
+        print(
+            f"asOf={data_point['asOf']}, "
+            f"period={data_point['periodName']}, "
+            f"revision={data_point['revision']}): "
+            f"{data_point['value']})"
+        )
+
 def main(file_path=None):
     print(">>>> Running Spark API Python sample...")
 
@@ -321,6 +337,9 @@ def main(file_path=None):
 
     # Routes (only a few ones)
     fetch_routes(access_token)
+
+    # Intraday live data
+    fetch_intraday(access_token)
 
     print(">>>> Well done, you successfully ran your first queries!")
 

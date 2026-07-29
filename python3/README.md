@@ -12,14 +12,14 @@ don't have any.
 ### Running the script by providing the `client_credentials.csv` file path 
 
 ```shell
-$ python spark_api_example.py <client_credentials_csv_file_path>
+$ python spark_price_releases.py <client_credentials_csv_file_path>
 ```
 
 ### Running the script by providing environment variables:
 
 ```shell
 $ export SPARK_CLIENT_ID=XXXX
-$ export CLIENT_SECRET=YYYY
+$ export SPARK_CLIENT_SECRET=YYYY
 $ python spark_api_example.py
 ```
 
